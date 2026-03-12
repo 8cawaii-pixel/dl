@@ -22,6 +22,17 @@ export async function GET(request: { url: string | URL; headers: { get: (arg0: s
     try {
         const response = await fetch(imageUrl);
 
+        // if we couldn't fetch the resource, return an appropriate error
+        if (!response.ok) {
+            if (response.status === 404) {
+                return new Response('File not found', { status: 404 });
+            }
+            // other fetch errors (403, 500, etc.)
+            return new Response(`Error fetching resource: ${response.status} ${response.statusText}`, {
+                status: response.status,
+            });
+        }
+
         // 3. Extract filename from URL (optional but helpful)
         const urlParts = imageUrl.split('/');
         const fileName = urlParts[urlParts.length - 1] || 'download';
@@ -37,7 +48,8 @@ export async function GET(request: { url: string | URL; headers: { get: (arg0: s
             },
         });
     } catch (error) {
-        return new Response('Proxy Error', { status: 500 });
+        // network errors, DNS issues, etc. fall here
+        return new Response('Unable to fetch resource', { status: 502 });
     }
 }
 
