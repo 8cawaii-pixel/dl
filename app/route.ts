@@ -6,7 +6,7 @@ export async function GET(request: { url: string | URL; }) {
     const imageUrl = searchParams.get('url');
 
     if (!imageUrl) {
-        return new Response('Missing "url" parameter', { status: 400 });
+        return new Response('Hello Darkness My Old Friend', { status: 400 });
     }
 
     try {
